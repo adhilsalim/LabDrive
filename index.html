@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>FIREBASE LOGIN</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,100' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="./style.css">
+
+  <script type="application/javascript" src="./scripts/ui.js"></script>
+  <script type="application/javascript" src="./scripts/functions.js"></script>
+  <script type="module" src="./scripts/index.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="backbox">
+      <div class="loginMsg">
+        <div class="textcontent">
+          <p class="title">Don't have an account?</p>
+          <p>create an account to get started.</p>
+          <button id="switch1">Create Account</button>
+        </div>
+      </div>
+      <div class="signupMsg visibility">
+        <div class="textcontent">
+          <p class="title">Have an account?</p>
+          <p>Log in to access your drive.</p>
+          <button id="switch2">Log In</button>
+        </div>
+      </div>
+    </div>
+    <!-- backbox -->
+
+    <div class="frontbox">
+      <div class="login">
+        <h2>LOG IN</h2>
+        <div class="inputbox">
+          <input type="text" name="email" id="txtEmail" placeholder="  EMAIL">
+          <input type="password" name="password" id="txtPassword" placeholder="  PASSWORD">
+        </div>
+        <p>forget password?</p>
+        <button id="btnLogin">LOG IN</button>
+      </div>
+
+      <div class="signup hide">
+        <h2>SIGN UP</h2>
+        <div class="inputbox">
+          <!--<input type="text" name="fullname" placeholder="  FULLNAME">-->
+          <input type="text" name="email" id="signInEmail" placeholder="  EMAIL">
+          <!--<div class="passwordBox">
+            <form method="get" class="digit-group" data-group-name="digits" data-autosubmit="false" autocomplete="off">
+              <input type="text" id="digit-1" name="digit-1" data-next="digit-2" />
+              <input type="text" id="digit-2" name="digit-2" data-next="digit-3" data-previous="digit-1" />
+              <span class="splitter">&ndash;</span>
+              <input type="text" id="digit-3" name="digit-3" data-next="digit-4" data-previous="digit-2" />
+              <input type="text" id="digit-4" name="digit-4" data-next="digit-5" data-previous="digit-3" />
+            </form>
+          </div>-->
+          <input type="password" name="password" id="signInPassword" placeholder=" PASSWORD">
+        </div>
+        <button id="btnSignUp">SIGN UP</button>
+      </div>
+
+    </div>
+    <!-- frontbox -->
+  </div>
+  <div class="containerMAIN">
+    <input type="text" id="namebox">
+    <label for="extlabel" id="extlabel"></label>
+    <label for="proglab" id="proglab"></label>
+    <img id="myimg" alt="image" style="width: 50px; height: 50px;">
+    <button id="btnLogout">LOG OUT</button>
+    <button id="selbtn">select image</button>
+    <button id="upbtn">upload image</button>
+    <button id="downbtn">download image</button>
+  </div>
+</body>
+
+<script src="./script.js"></script>
+
+</html>
