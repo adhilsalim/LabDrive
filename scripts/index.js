@@ -107,6 +107,14 @@ const createAccount = async () => {
             const usersCredential = await createUserWithEmailAndPassword(auth, userEmail, userPassword);
             const userUniqueId = usersCredential.user.uid;
             writeUserData(userUniqueId, getFullName(), userRollNumber.value, userBirthDay.value, userEmail, userPasswordShort);
+            if (typeof (Storage) !== "undefined") {
+                if (defaultDevice.checked) {
+                    localStorage.setItem(String(userBirthDay.value), String(userPasswordShort.value));
+                }
+
+            } else {
+                console.log('no local storage');
+            }
         }
         catch (error) {
             console.log(error);
@@ -115,7 +123,7 @@ const createAccount = async () => {
     }
     else {
         console.log('form is not ok');
-        showLoginError('displayErrorMessage');
+        //showLoginError('displayErrorMessage');
     }
 
 }
@@ -183,7 +191,9 @@ function createUserFolder(userId, db, folderName) {
 //onChildRemoved()
 
 
-
+passwordForgetButton.addEventListener("click", () => {
+    getUserPassword();
+});
 
 
 

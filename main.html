@@ -19,20 +19,22 @@
         <div id="loginBox" class="frontbox">
             <div class="login">
                 <h2>log in with existing account</h2>
-                <p id="signInError">error message here</p>
+                <p id="signInError" style="display: none;">error message here for sign in</p>
                 <div class="inputbox">
                     <input type="number" min="1" max="70" maxlength="2" name="logInRollNumber" id="logInRollNumber"
                         placeholder="ROLL NUMBER" required> <br>
                     <input type="password" maxlength="4" name="logInPassword" id="logInPassword" placeholder="PASSWORD"
                         required>
                 </div>
-                <p>forget password?</p>
+                <p id="pwdForgetBtn">forget password?</p>
                 <button id="btnLogin">LOG IN</button>
             </div>
             <br><br>
             <div class="signup hide">
                 <h2>create account</h2>
-                <p id="signUpError">error message here</p>
+                <p id="signUpError" style="display: none;">error message here</p>
+                <p>Account verification process will be handled in the upcoming release, Please make sure that you are
+                    entering the correct roll number, otherwise your account may remain as unverified.</p>
                 <div class="inputbox">
                     <input type="text" name="firstName" id="firstName" placeholder="FIRST NAME" required><br>
                     <input type="text" name="midName" id="midName" placeholder="MID NAME"><br>
@@ -41,6 +43,8 @@
                     <input type="number" name="rollNumber" id="rollNumber" placeholder="ROLL NUMBER" maxlength="2"
                         max="70" min="1" required><br>
                     <input type="date" name="bday" id="bday" required><br>
+                    <input type="checkbox" id="defaultDevice" name="defaultDevice" value="This is my default device."
+                        required>
                     <input type="password" name="password" id="userPassword" placeholder="4 CHARACTER PASSWORD"
                         maxlength="4" required><br>
                 </div>
