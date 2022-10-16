@@ -1,4 +1,4 @@
-//importing firebase services
+//IMPORTING FIREBASE SERVICE - AUTH, RT DB, STORAGE
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js';
 import {
     getAuth,
@@ -23,7 +23,7 @@ import {
 } from 'https://www.gstatic.com/firebasejs/9.12.1/firebase-storage.js';
 
 
-//firebase initialize
+//FIREBASE INITIALIZATION
 const firebaseApp = initializeApp({
     apiKey: "AIzaSyCyIzzAEVq7Dt7i3nJDzRaLLWFa7Zqblqs",
     authDomain: "adhil-services.firebaseapp.com",
@@ -34,19 +34,20 @@ const firebaseApp = initializeApp({
     appId: "1:493243510921:web:099fcb83fb7c10ebd95658"
 });
 
-const auth = getAuth(firebaseApp); //reference to authentication
 
-//==================================AUTH=========================================//
+//==================================AUTHENTICATION=========================================//
+const auth = getAuth(firebaseApp); //auth
 
-//check auth state
+// CHECKING CURRENT AUTH STATE
 onAuthStateChanged(auth, (user) => {
     if (user != null) {
+        //const userDisplayName = user.displayName;
+        //const userPhotoUrl = user.photoURL;
+        //const userEmailVerified = user.emailVerified;
         console.log('user logged in: ', user);
-        const userDisplayName = user.displayName;
-        const userEmail = user.email;
-        const userPhotoUrl = user.photoURL;
-        const userEmailVerified = user.emailVerified;
+
         const userUid = user.uid;
+        const userEmail = user.email;
         //console.log(userDisplayName, userEmail, userPhotoUrl, userEmailVerified, userUid);
         //getUserData();
     } else {
@@ -54,6 +55,7 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
+//
 function getUserData() {
     var userFolders = database.ref('leads');
     leadsRef.on('value', function (snapshot) {
@@ -63,18 +65,16 @@ function getUserData() {
     });
 }
 
-//login with existing account
+//login wth email and password
 const loginEmailWithPassword = async () => {
-    console.log('login with email and password');
+    //console.log('login with email and password');
     const userEmail = convertRollNumberToEmail(signUpRollNumber.value);
-    console.log(userEmail);
+    //console.log(userEmail);
     const userPassword = strongPassword(signUpPassword.value);
-    console.log(userPassword);
+    //console.log(userPassword);
 
-    console.log(signUpRollNumber.value.length);
-    console.log(signUpPassword.value.length);
     if (signUpRollNumber.value.length != 0 && signUpPassword.value.length == 4) {
-        console.log('sign up form is ok');
+        //console.log('sign in form is ok');
         try {
             const usersCredential = await signInWithEmailAndPassword(auth, userEmail, userPassword);
             console.log(usersCredential.user);
@@ -84,29 +84,29 @@ const loginEmailWithPassword = async () => {
         }
     }
     else {
-        console.log('sign up form is not ok');
-        showLoginError('displayErrorMessage');
+        //console.log('sign in form is not ok');
+        showAccountAccessError('signIn', 'displayErrorMessage');
     }
-
-
 }
 btnLogin.addEventListener('click', loginEmailWithPassword);
 
-//create new account
+//create new account with email and password (roll number and password)
 const createAccount = async () => {
-    console.log('create account function');
+    //console.log('create account function');
     const userEmail = convertRollNumberToEmail(userRollNumber.value);
-    console.log(userEmail);
+    //console.log(userEmail);
     const userPassword = strongPassword(userPasswordShort.value);
-    console.log(userPassword);
+    c//onsole.log(userPassword);
 
     if (signUpFormIsOk()) {
-        console.log('form is ok');
+        //console.log('form is ok');
         try {
-            console.log('try block');
+            //console.log('try block');
             const usersCredential = await createUserWithEmailAndPassword(auth, userEmail, userPassword);
             const userUniqueId = usersCredential.user.uid;
             writeUserData(userUniqueId, getFullName(), userRollNumber.value, userBirthDay.value, userEmail, userPasswordShort);
+
+            /* localStorage for storing password */
             if (typeof (Storage) !== "undefined") {
                 if (defaultDevice.checked) {
                     localStorage.setItem(String(userBirthDay.value), String(userPasswordShort.value));
@@ -174,28 +174,27 @@ function writeUserData(userId, name, rnum, bday, email, pass) {
     createUserFolder(userId, db, 'Others');
 }
 
+
+//creating folder node 
 function createUserFolder(userId, db, folderName) {
-    console.log('create user folder for user id', userId, 'and folder name', folderName);
+    //console.log('create user folder for user id', userId, 'and folder name', folderName);
     const userFoldersRef = ref(db, 'LabDrive/users/' + userId + '/folders');
     const newUserFolder = push(userFoldersRef);
     set(newUserFolder, {
         foldername: folderName
     }).then((error) => {
-        //console.log(error);
-        console.log('folder ', folderName, 'created.');
+        console.log(error);
+        //console.log('folder ', folderName, 'created.');
     });
 }
-
-//onChildAdded()
-//onChildChanged()
-//onChildRemoved()
-
 
 passwordForgetButton.addEventListener("click", () => {
     getUserPassword();
 });
 
-
+//onChildAdded()
+//onChildChanged()
+//onChildRemoved()
 
 
 
