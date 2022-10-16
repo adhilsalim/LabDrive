@@ -95,9 +95,11 @@ const createAccount = async () => {
         try {
             console.log('try block');
             const usersCredential = await createUserWithEmailAndPassword(auth, userEmail, userPassword);
-            console.log('THE UID 1', usersCredential.user.uid);
+            const userUniqueId = usersCredential.user.uid;
+            //console.log('THE UID 1', userUniqueId);
+            //console.log(usersCredential.user.value);
             //console.log('THE UID 2', usersCredential.uid);
-            writeUserData(usersCredential.user.userId, getFullName(), userRollNumber.value, userBirthDay.value, userEmail, userPasswordShort);
+            writeUserData(userUniqueId, getFullName(), userRollNumber.value, userBirthDay.value, userEmail, userPasswordShort);
         }
         catch (error) {
             console.log(error);
@@ -119,12 +121,12 @@ const monitorAuthState = () => {
         if (user) {
             console.log('user logged in');
             console.log(user);
-            showApp(true);
+            showApp(true, user);
             loginPageVisible(false);
         }
         else {
             console.log('user logged out');
-            showApp(false);
+            showApp(false, 'null');
             loginPageVisible(true);
         }
     });
@@ -148,6 +150,16 @@ function writeUserData(userId, name, rnum, bday, email, pass) {
         birthday: bday,
         emailid: email,
         password: pass
+    });
+
+    set(ref(db, 'LabDrive/users/' + userId + '/folders'), {
+
+    });
+
+    const userFoldersRef = ref(db, 'LabDrive/users/' + userId + '/folders');
+    const newUserFolder = push(userFoldersRef);
+    set(newUserFolder, {
+        foldername: 'Java'
     });
 }
 

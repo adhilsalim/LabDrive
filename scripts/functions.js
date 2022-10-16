@@ -40,12 +40,18 @@ function loginPageVisible(formVisibility) {
 }
 
 //to show app based on login state of user
-function showApp(openApp) {
+function showApp(openApp, userData) {
     if (openApp) {
-        console.log('show app');
+        let userId = userData.uid;
+        let usermail = userData.email;
+        console.log('show app id', userId);
+        console.log('show app mail', usermail);
+        accountMail.style.display = 'block';
+        accountMail.innerHTML = `Logged in as ` + usermail;
     }
     else {
-        console.log('hide app');
+        console.log('hide app', userData);
+        accountMail.style.display = 'none';
     }
 
 }

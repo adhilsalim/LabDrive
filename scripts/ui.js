@@ -23,6 +23,6 @@ const signUpPassword = document.getElementById('logInPassword');
 //logout
 const btnLogout = document.getElementById('btnLogout');
 
-
+const accountMail = document.getElementById('accountMail');
 //====================================FUNCTIONS====================================
 
