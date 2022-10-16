@@ -96,9 +96,6 @@ const createAccount = async () => {
             console.log('try block');
             const usersCredential = await createUserWithEmailAndPassword(auth, userEmail, userPassword);
             const userUniqueId = usersCredential.user.uid;
-            //console.log('THE UID 1', userUniqueId);
-            //console.log(usersCredential.user.value);
-            //console.log('THE UID 2', usersCredential.uid);
             writeUserData(userUniqueId, getFullName(), userRollNumber.value, userBirthDay.value, userEmail, userPasswordShort);
         }
         catch (error) {
@@ -150,28 +147,43 @@ function writeUserData(userId, name, rnum, bday, email, pass) {
         birthday: bday,
         emailid: email,
         password: pass
+    }).then(() => {
+        console.log('data saved');
     });
 
-    set(ref(db, 'LabDrive/users/' + userId + '/folders'), {
+    createUserFolder(userId, db, 'OOPS');
+    createUserFolder(userId, db, 'DS');
+    createUserFolder(userId, db, 'Others');
+}
 
-    });
-
+function createUserFolder(userId, db, folderName) {
+    console.log('create user folder for user id', userId, 'and folder name', folderName);
     const userFoldersRef = ref(db, 'LabDrive/users/' + userId + '/folders');
     const newUserFolder = push(userFoldersRef);
     set(newUserFolder, {
-        foldername: 'Java'
+        foldername: folderName
+    }).then((error) => {
+        //console.log(error);
+        console.log('folder ', folderName, 'created.');
     });
 }
-
-/*onValue(distref, (snapshot) => {
-    const data = snapshot.val();
-    console.log(data);
-    updatedist(posElement, data);
-});*/
 
 //onChildAdded()
 //onChildChanged()
 //onChildRemoved()
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //==================================STORAGE=========================================//
 var files = [];
