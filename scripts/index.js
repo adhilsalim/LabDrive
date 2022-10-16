@@ -47,11 +47,21 @@ onAuthStateChanged(auth, (user) => {
         const userPhotoUrl = user.photoURL;
         const userEmailVerified = user.emailVerified;
         const userUid = user.uid;
-        console.log(userDisplayName, userEmail, userPhotoUrl, userEmailVerified, userUid);
+        //console.log(userDisplayName, userEmail, userPhotoUrl, userEmailVerified, userUid);
+        //getUserData();
     } else {
         console.log('user logged out');
     }
 });
+
+function getUserData() {
+    var userFolders = database.ref('leads');
+    leadsRef.on('value', function (snapshot) {
+        snapshot.forEach(function (childSnapshot) {
+            var childData = childSnapshot.val();
+        });
+    });
+}
 
 //login with existing account
 const loginEmailWithPassword = async () => {
