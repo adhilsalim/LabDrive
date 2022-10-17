@@ -94,7 +94,7 @@ function getUserData() {
             const childKey = childSnapshot.key;
             const childData = childSnapshot.val();
             console.log(childData.foldername);
-            html += `${childData.foldername}<br>`;
+            html += `<p id="cd${childData.folderName}" onclick="openFolder(this.id)"><b>${childData.foldername}</b></p>`;
             document.getElementById('counterTotalFolders').innerHTML = html;
             //console.log(html);
         });
@@ -186,7 +186,8 @@ function writeUserData(userId, name, rnum, bday, email, pass) {
         rollnumber: rnum,
         birthday: bday,
         emailid: email,
-        password: pass
+        totalupload: 0,
+        totaldownload: 0
     }).then(() => {
         console.log('data saved'); //user data saved
     }).catch((error) => {

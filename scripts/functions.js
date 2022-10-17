@@ -61,6 +61,11 @@ function signInFormIsOk() {
     }
 }
 
+//
+function openFolder(foldername) {
+
+}
+
 //to show login page based on login state of user
 function loginPageVisible(formVisibility) {
     //console.log('loginPageVisible');
