@@ -3,7 +3,6 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.12.1/firebas
 import {
     getAuth,
     onAuthStateChanged,
-    connectAuthEmulator,
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
     signOut
@@ -13,7 +12,10 @@ import {
     ref,
     set,
     onValue,
-    push
+    push,
+    onChildAdded,
+    onChildChanged,
+    onChildRemoved
 } from "https://www.gstatic.com/firebasejs/9.12.1/firebase-database.js";
 import {
     getStorage,
@@ -65,6 +67,8 @@ const monitorAuthState = () => {
 
             showApp(true, user); //open app
             loginPageVisible(false); //close login page
+
+            getUserData(); //get user data
         }
         else {
             console.log('USER LOGGED OUT');
@@ -76,16 +80,28 @@ const monitorAuthState = () => {
 }
 monitorAuthState();
 
-
+var totalFolders = 0;
 //GET BASIC USER DATA [INCOMPLETE]
 function getUserData() {
-    var userFolders = database.ref('leads');
-    leadsRef.on('value', function (snapshot) {
-        snapshot.forEach(function (childSnapshot) {
-            var childData = childSnapshot.val();
+    const db = getDatabase();
+    const dbRef = ref(db, 'LabDrive/users/' + auth.currentUser.uid + '/folders');
+    var html = document.getElementById('counterTotalFolders').innerHTML;
+
+    onValue(dbRef, (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+            totalFolders++;
+            const childKey = childSnapshot.key;
+            const childData = childSnapshot.val();
+            console.log(childData.foldername);
+            html += `${childData.foldername}<br>`;
+            document.getElementById('counterTotalFolders').innerHTML = html;
+            console.log(html);
         });
-    });
+    }, {
+        onlyOnce: true,
+    })
 }
+
 
 
 //LOG IN USER WITH ROLL NUMBER AND PASSWORD (EMAIL AND PASSWORD)
@@ -99,7 +115,8 @@ const loginEmailWithPassword = async () => {
             console.log(usersCredential.user);
         }
         catch (error) {
-            showLoginError(error.message);
+            //console.log('the error message is', String(error.message));
+            showAuthenticationError(String(error.message), 'signIn');
         }
     }
     else {
@@ -137,8 +154,8 @@ const createAccount = async () => {
             }
         }
         catch (error) {
-            console.log(error);
-            showLoginError(error.message);
+            console.log('the error message is', error);
+            showAuthenticationError(error.message, 'signUp');
         }
     }
     else {
@@ -187,7 +204,8 @@ function createUserFolder(userId, db, folderName) {
     const newUserFolder = push(userFoldersRef);
 
     set(newUserFolder, {
-        foldername: folderName
+        foldername: folderName,
+        files: ''
     }).then(() => {
         console.log('folder created'); //folder created
     }).catch((error) => {
@@ -195,9 +213,7 @@ function createUserFolder(userId, db, folderName) {
     });
 }
 
-//onChildAdded()
-//onChildChanged()
-//onChildRemoved()
+
 
 
 

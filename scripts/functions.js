@@ -28,11 +28,16 @@ function formFillError(formType) {
 }
 
 //SHOW LOG IN/SIGN IN ERROR FROM FIREBASE
-function showLoginError(error) {
-    let errorCode = error.code;
-    let errorMessage = error.message;
-    signInErrorDisplay.style.display = 'block';
-    signInErrorDisplay.innerHTML = errorMessage + `ERROR CODE: ` + errorCode;
+function showAuthenticationError(error, formType) {
+
+    if (formType == 'signUp') {
+        signUpErrorDisplay.style.display = 'block';
+        signUpErrorDisplay.innerHTML = error.replace('Firebase: Error (auth/', '').replace(').', '');
+    }
+    else if (formType == 'signIn') {
+        signInErrorDisplay.style.display = 'block';
+        signInErrorDisplay.innerHTML = error.replace('Firebase: Error (auth/', '').replace(').', '');
+    }
 }
 
 //TO VALIDATE SIGN UP FORM
@@ -55,6 +60,7 @@ function signInFormIsOk() {
         return false;
     }
 }
+
 //to show login page based on login state of user
 function loginPageVisible(formVisibility) {
     //console.log('loginPageVisible');
