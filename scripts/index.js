@@ -39,23 +39,45 @@ const firebaseApp = initializeApp({
 const auth = getAuth(firebaseApp); //auth
 
 // CHECKING CURRENT AUTH STATE
+/*
 onAuthStateChanged(auth, (user) => {
     if (user != null) {
+
         //const userDisplayName = user.displayName;
         //const userPhotoUrl = user.photoURL;
         //const userEmailVerified = user.emailVerified;
-        console.log('user logged in: ', user);
 
+        console.log('user logged in: ', user);
         const userUid = user.uid;
         const userEmail = user.email;
+
         //console.log(userDisplayName, userEmail, userPhotoUrl, userEmailVerified, userUid);
         //getUserData();
+
     } else {
         console.log('user logged out');
     }
-});
+});*/
+const monitorAuthState = () => {
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            console.log('USER LOGGED IN ', user);
 
-//
+            showApp(true, user); //open app
+            loginPageVisible(false); //close login page
+        }
+        else {
+            console.log('USER LOGGED OUT');
+
+            showApp(false, 'null'); //close app
+            loginPageVisible(true); //open login page
+        }
+    });
+}
+monitorAuthState();
+
+
+//GET BASIC USER DATA [INCOMPLETE]
 function getUserData() {
     var userFolders = database.ref('leads');
     leadsRef.on('value', function (snapshot) {
@@ -65,16 +87,13 @@ function getUserData() {
     });
 }
 
-//login wth email and password
-const loginEmailWithPassword = async () => {
-    //console.log('login with email and password');
-    const userEmail = convertRollNumberToEmail(signUpRollNumber.value);
-    //console.log(userEmail);
-    const userPassword = strongPassword(signUpPassword.value);
-    //console.log(userPassword);
 
-    if (signUpRollNumber.value.length != 0 && signUpPassword.value.length == 4) {
-        //console.log('sign in form is ok');
+//LOG IN USER WITH ROLL NUMBER AND PASSWORD (EMAIL AND PASSWORD)
+const loginEmailWithPassword = async () => {
+    const userEmail = convertRollNumberToEmail(logInRollNumber.value);
+    const userPassword = strongPassword(logInPassword.value);
+
+    if (signInFormIsOk()) {
         try {
             const usersCredential = await signInWithEmailAndPassword(auth, userEmail, userPassword);
             console.log(usersCredential.user);
@@ -84,19 +103,18 @@ const loginEmailWithPassword = async () => {
         }
     }
     else {
-        //console.log('sign in form is not ok');
-        showAccountAccessError('signIn', 'displayErrorMessage');
+        formFillError('signIn');
     }
 }
 btnLogin.addEventListener('click', loginEmailWithPassword);
 
-//create new account with email and password (roll number and password)
+//SIGN UP WITH ROLL NUMBER AND PASSWORD (EMAIL AND PASSWORD) [HERE]
 const createAccount = async () => {
     //console.log('create account function');
     const userEmail = convertRollNumberToEmail(userRollNumber.value);
     //console.log(userEmail);
     const userPassword = strongPassword(userPasswordShort.value);
-    c//onsole.log(userPassword);
+    //c//onsole.log(userPassword);
 
     if (signUpFormIsOk()) {
         //console.log('form is ok');
@@ -130,23 +148,7 @@ const createAccount = async () => {
 btnSignUp.addEventListener('click', createAccount);
 
 
-//monitor auth state
-const monitorAuthState = () => {
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            console.log('user logged in');
-            console.log(user);
-            showApp(true, user);
-            loginPageVisible(false);
-        }
-        else {
-            console.log('user logged out');
-            showApp(false, 'null');
-            loginPageVisible(true);
-        }
-    });
-}
-monitorAuthState();
+
 
 //logout
 const logOut = async () => {

@@ -34,11 +34,7 @@ function showLoginError(error) {
     signInErrorDisplay.style.display = 'block';
     signInErrorDisplay.innerHTML = errorMessage + `ERROR CODE: ` + errorCode;
 }
-let errorMessage = error.message;
-signInErrorDisplay.style.display = 'block';
-signInErrorDisplay.innerHTML = errorMessage;
-}
-
+//[HERE]
 //TO VALIDATE SIGN UP FORM
 function signUpFormIsOk() {
 
