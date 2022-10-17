@@ -108,24 +108,26 @@ const loginEmailWithPassword = async () => {
 }
 btnLogin.addEventListener('click', loginEmailWithPassword);
 
-//SIGN UP WITH ROLL NUMBER AND PASSWORD (EMAIL AND PASSWORD) [HERE]
+//FORGET PASSWORD
+passwordForgetButton.addEventListener("click", () => {
+    getUserPassword();
+});
+
+//SIGN UP WITH ROLL NUMBER AND PASSWORD (EMAIL AND PASSWORD)
 const createAccount = async () => {
-    //console.log('create account function');
     const userEmail = convertRollNumberToEmail(userRollNumber.value);
-    //console.log(userEmail);
     const userPassword = strongPassword(userPasswordShort.value);
-    //c//onsole.log(userPassword);
 
     if (signUpFormIsOk()) {
-        //console.log('form is ok');
         try {
-            //console.log('try block');
             const usersCredential = await createUserWithEmailAndPassword(auth, userEmail, userPassword);
             const userUniqueId = usersCredential.user.uid;
+
+            //store user data to realtime db
             writeUserData(userUniqueId, getFullName(), userRollNumber.value, userBirthDay.value, userEmail, userPasswordShort);
 
             /* localStorage for storing password */
-            if (typeof (Storage) !== "undefined") {
+            if (typeof (Storage) != "undefined") {
                 if (defaultDevice.checked) {
                     localStorage.setItem(String(userBirthDay.value), String(userPasswordShort.value));
                 }
@@ -140,27 +142,27 @@ const createAccount = async () => {
         }
     }
     else {
-        console.log('form is not ok');
-        //showLoginError('displayErrorMessage');
+        formFillError('signUp');
     }
 
 }
 btnSignUp.addEventListener('click', createAccount);
 
-
-
-
-//logout
+//LOG OUT USER
 const logOut = async () => {
     await signOut(auth);
 }
 btnLogout.addEventListener('click', logOut);
 
+
 //==================================DATABASE=========================================//
+//STORING USERDATA TO DATABASE
 function writeUserData(userId, name, rnum, bday, email, pass) {
     const db = getDatabase();
+
     //const dbRef = ref(db, 'LabDrive/users/' + userId);
     //const newPostRef = push(dbRef);
+
     set(ref(db, 'LabDrive/users/' + userId), {
         fullname: name,
         rollnumber: rnum,
@@ -168,31 +170,30 @@ function writeUserData(userId, name, rnum, bday, email, pass) {
         emailid: email,
         password: pass
     }).then(() => {
-        console.log('data saved');
+        console.log('data saved'); //user data saved
+    }).catch((error) => {
+        console.log(error); //error
     });
 
+    //calling function to create the user folders
     createUserFolder(userId, db, 'OOPS');
     createUserFolder(userId, db, 'DS');
     createUserFolder(userId, db, 'Others');
 }
 
-
-//creating folder node 
+//CREATING FOLDER
 function createUserFolder(userId, db, folderName) {
-    //console.log('create user folder for user id', userId, 'and folder name', folderName);
     const userFoldersRef = ref(db, 'LabDrive/users/' + userId + '/folders');
     const newUserFolder = push(userFoldersRef);
+
     set(newUserFolder, {
         foldername: folderName
-    }).then((error) => {
-        console.log(error);
-        //console.log('folder ', folderName, 'created.');
+    }).then(() => {
+        console.log('folder created'); //folder created
+    }).catch((error) => {
+        console.log(error); //error
     });
 }
-
-passwordForgetButton.addEventListener("click", () => {
-    getUserPassword();
-});
 
 //onChildAdded()
 //onChildChanged()

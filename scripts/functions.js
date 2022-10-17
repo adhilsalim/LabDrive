@@ -34,7 +34,7 @@ function showLoginError(error) {
     signInErrorDisplay.style.display = 'block';
     signInErrorDisplay.innerHTML = errorMessage + `ERROR CODE: ` + errorCode;
 }
-//[HERE]
+
 //TO VALIDATE SIGN UP FORM
 function signUpFormIsOk() {
 
@@ -42,8 +42,6 @@ function signUpFormIsOk() {
         return true;
     }
     else {
-        signUpErrorDisplay.style.display = 'block';
-        signUpErrorDisplay.innerHTML = 'Please fill all the fields correctly<br>1)First and Last name should not be empty<br>2)Roll number should be between 1 and 70<br>3)Birthday should not be empty<br>4)Password should be 4 characters long';
         return false;
     }
 }
