@@ -85,6 +85,7 @@ var totalFolders = 0;
 function getUserData() {
     const db = getDatabase();
     const dbRef = ref(db, 'LabDrive/users/' + auth.currentUser.uid + '/folders');
+    //temp
     var html = document.getElementById('counterTotalFolders').innerHTML;
 
     onValue(dbRef, (snapshot) => {
@@ -95,7 +96,7 @@ function getUserData() {
             console.log(childData.foldername);
             html += `${childData.foldername}<br>`;
             document.getElementById('counterTotalFolders').innerHTML = html;
-            console.log(html);
+            //console.log(html);
         });
     }, {
         onlyOnce: true,
@@ -202,11 +203,12 @@ function writeUserData(userId, name, rnum, bday, email, pass) {
 function createUserFolder(userId, db, folderName) {
     const userFoldersRef = ref(db, 'LabDrive/users/' + userId + '/folders');
     const newUserFolder = push(userFoldersRef);
+    var folderId = newUserFolder.key;
 
     set(newUserFolder, {
-        foldername: folderName,
-        files: ''
+        foldername: folderName
     }).then(() => {
+        addWelcomeFile(userId, db, folderId, folderName);
         console.log('folder created'); //folder created
     }).catch((error) => {
         console.log(error); //error
@@ -214,7 +216,23 @@ function createUserFolder(userId, db, folderName) {
 }
 
 
+function addWelcomeFile(userId, db, folderId, folderName) {
 
+    const userFilesRef = ref(db, 'LabDrive/users/' + userId + '/folders/' + folderId + '/files');
+    const newUserFile = push(userFilesRef);
+
+    set(newUserFile, {
+        filename: 'Welcome to LabDrive',
+        fileurl: 'https://google.com',
+        filetype: 'text/plain',
+        filesize: '0.00 KB',
+        filedate: '2021-01-01'
+    }).then(() => {
+        console.log('file created'); //file created
+    }).catch((error) => {
+        console.log(error); //error
+    });
+}
 
 
 
