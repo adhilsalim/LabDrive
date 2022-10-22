@@ -36,6 +36,9 @@ const firebaseApp = initializeApp({
     appId: "1:493243510921:web:099fcb83fb7c10ebd95658"
 });
 
+//====================================GLOBAL VARIABLES=======================================//
+var currentUserUID = '';
+var totalFolders = 0;
 
 //==================================AUTHENTICATION=========================================//
 const auth = getAuth(firebaseApp); //auth
@@ -80,15 +83,20 @@ const monitorAuthState = () => {
 }
 monitorAuthState();
 
-var totalFolders = 0;
+
 //GET BASIC USER DATA [INCOMPLETE]
 function getUserData() {
     const db = getDatabase();
-    const dbRef = ref(db, 'LabDrive/users/' + auth.currentUser.uid + '/folders');
+    const userFileRef = ref(db, 'LabDrive/users/' + auth.currentUser.uid + '/folders');
+    const userAccountDetailsRef = ref(db, 'LabDrive/users/' + auth.currentUser.uid);
+
+    //GETTING USER DATA
+    currentUserUID = auth.currentUser.uid;
+
     //temp
     var html = document.getElementById('counterTotalFolders').innerHTML;
 
-    onValue(dbRef, (snapshot) => {
+    onValue(userFileRef, (snapshot) => {
         snapshot.forEach((childSnapshot) => {
             totalFolders++;
             const childKey = childSnapshot.key;
@@ -96,6 +104,21 @@ function getUserData() {
             console.log(childData.foldername);
             html += `<p id="cd${childData.folderName}" onclick="openFolder(this.id)"><b>${childData.foldername}</b></p>`;
             document.getElementById('counterTotalFolders').innerHTML = html;
+            //console.log(html);
+        });
+    }, {
+        onlyOnce: true,
+    })
+
+
+    onValue(userAccountDetailsRef, (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+            const childKey = childSnapshot.key;
+            const childData = childSnapshot.val();
+            console.log(childKey, childData);
+            //console.log(childData.foldername);
+            //html += `<p id="cd${childData.folderName}" onclick="openFolder(this.id)"><b>${childData.foldername}</b></p>`;
+            //document.getElementById('counterTotalFolders').innerHTML = html;
             //console.log(html);
         });
     }, {
@@ -246,43 +269,57 @@ function addWelcomeFile(userId, db, folderId, folderName) {
 var files = [];
 var reader = new FileReader();
 
-var namebox = document.getElementById('namebox');
-var extlabel = document.getElementById('extlabel');
-var myimg = document.getElementById('myimg');
-var proglab = document.getElementById('proglab');
-var selbtn = document.getElementById('selbtn');
-var upbtn = document.getElementById('upbtn');
-var downbtn = document.getElementById('downbtn');
+//DISPLAY FILE NAME AND EXTENSION
+var fileNameDisplay = document.getElementById('fileNameDisplay');
+var fileExtDisplay = document.getElementById('fileExtDisplay');
 
-var input = document.createElement('input');
-input.type = 'file';
+//FILE UPLOAD PROGRESS BAR
+var fileUploadProgressBar = document.getElementById('fileProgressText');
 
-input.onchange = e => {
+//FILE ACTION BUTTONS
+var fileSelectionButton = document.getElementById('fileSelBtn');
+var fileUploadButton = document.getElementById('fileUpBtn');
+var fileDownloadButton = document.getElementById('fileDownBtn');
+
+var fileInput = document.createElement('input');
+fileInput.type = 'file';
+
+//FILE SELECTION
+fileInput.onchange = e => {
     files = e.target.files;
 
-    var extension = GetFileExt(files[0]);
+    var extension = GetFileExt(files[0]).toLowerCase();
     var name = GetFileName(files[0]);
-
-    namebox.value = name;
-    extlabel.innerHTML = extension;
+    console.log(extension);
+    if (extension == '.c' || extension == '.java' || extension == '.txt') {
+        fileNameDisplay.value = name;
+        fileExtDisplay.innerHTML = extension;
+    }
+    else {
+        console.log('file type not allowed');
+    }
 
     reader.readAsDataURL(files[0]);
 }
 
+//FILE AFTER SELECTION
 reader.onload = function () {
-    myimg.src = reader.result;
+    console.log('file loaded');
 }
 
-selbtn.addEventListener('click', function () {
-    input.click();
+fileSelectionButton.addEventListener('click', function () {
+    fileInput.click();
 });
 
+
+//FUNCTION TO GET FILE EXTENSION
 function GetFileExt(file) {
     var temp = file.name.split('.');
     var ext = temp.slice((temp.length - 1), (temp.length));
     return '.' + ext[0];
 }
 
+//FUNCTION TO GET FILE NAME
 function GetFileName(file) {
     var temp = file.name.split('.');
     var fname = temp.slice(0, -1).join('.');
@@ -290,21 +327,25 @@ function GetFileName(file) {
 }
 
 async function UploadProcess() {
-    var imagToUpload = files[0];
-    var imgname = namebox.value + extlabel.innerHTML;
+
+    //SETTING FILE, FILENAME, FILETYPE 
+    var fileToUpload = files[0];
+    var fileName = fileNameDisplay.value + fileExtDisplay.innerHTML;
 
     const metaData = {
-        contentType: imagToUpload.type
+        contentType: fileToUpload.type
     }
 
-    const storage = getStorage();
-    const storageref = sRef(storage, 'images/' + imgname);
 
-    const uploadTask = uploadBytesResumable(storageref, imagToUpload, metaData);
+    //STORAGE REFERENCE
+    const storage = getStorage();
+    const storageReference = sRef(storage, 'LabDrive/' + currentUserUID + + fileName);
+
+    const uploadTask = uploadBytesResumable(storageReference, fileToUpload, metaData);
 
     uploadTask.on('state_changed', function (snapshot) {
         var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        proglab.innerHTML = 'Upload is ' + progress + '% done';
+        fileUploadProgressBar.innerHTML = 'Upload is ' + progress + '% done';
     }, function (error) {
         console.log(error);
     }, function () {
@@ -314,4 +355,4 @@ async function UploadProcess() {
     });
 }
 
-upbtn.addEventListener('click', UploadProcess);
+fileUploadButton.addEventListener('click', UploadProcess);

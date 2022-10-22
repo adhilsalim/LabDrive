@@ -15,8 +15,17 @@
     <p>LabDrive is a cloud storage service that allows you to store and access your files anywhere.</p>
     <br>
     <p id="accountMail"></p><br>
+
+    <h4 id="userProfileLetter">J</h4>
+    <h4 id="userFirstName">Jacob</h4>
+
+    <h5 id="totalFiles">12 files</h5>
+    <h5 id="totalUploads">21 uploads</h5>
+    <h5 id="totalDownloads">6 downloads</h5><br>
+
     <h3>My Folders</h3>
     <div id="counterTotalFolders"></div>
+
     <div class="containerHome">
         <div id="loginBox" class="frontbox">
             <div class="login">
@@ -55,18 +64,23 @@
         </div>
     </div>
     <br>
-    <button id="btnLogout">LOG OUT</button> <br>
+    <button id="btnLogout">LOG OUT</button> <br><br><br>
 
     <div id="fileUploadBox" class="container">
-        <input type="text" id="namebox">
-        <label for="extlabel" id="extlabel"></label>
-        <label for="proglab" id="proglab"></label>
-        <img id="myimg" alt="image" style="width: 50px; height: 50px;">
 
-        <button id="selbtn">SELECT FILE</button><br>
-        <button id="upbtn">UPLOAD FILE</button><br>
-        <button id="downbtn">download image</button>
+        <input type="text" maxlength="30" id="fileNameDisplay">
+        <label for="extlabel" id="fileExtDisplay"></label> <br>
+
+        <label for="fileProgressText" id="fileProgressText"></label>
+        <hr id="fileProgressBar" color="red" size="5" width="90%">
+
+        <!--<img id="myimg" alt="image" style="width: 50px; height: 50px;">-->
+
+        <button id="fileSelBtn">SELECT FILE</button><br>
+        <button id="fileUpBtn">UPLOAD FILE</button><br>
+        <button id="fileDownBtn">DOWNLOAD FILE</button>
     </div>
+
     <script type="application/javascript" src="./scripts/ui.js"></script>
 </body>
 
