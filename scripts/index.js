@@ -38,8 +38,15 @@ const firebaseApp = initializeApp({
 
 //====================================GLOBAL VARIABLES=======================================//
 var currentUserUID = '';
-var totalFolders = 0;
-
+var currentUserName = '';
+var currentUserBirthday = '';
+var currentUserEmail = '';
+var currentUserRollNumber = '';
+var totalUserFolders = 0;
+var totalUserFiles = 0;
+var currentUserTotalUploads = 0;
+var currentUserTotalDownloads = 0;
+var html;
 //==================================AUTHENTICATION=========================================//
 const auth = getAuth(firebaseApp); //auth
 
@@ -66,7 +73,7 @@ onAuthStateChanged(auth, (user) => {
 const monitorAuthState = () => {
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            console.log('USER LOGGED IN ', user);
+            console.log('USER LOGGED IN ');
 
             showApp(true, user); //open app
             loginPageVisible(false); //close login page
@@ -87,52 +94,69 @@ monitorAuthState();
 //GET BASIC USER DATA [INCOMPLETE]
 function getUserData() {
     const db = getDatabase();
-    const userFileRef = ref(db, 'LabDrive/users/' + auth.currentUser.uid + '/folders');
     const userAccountDetailsRef = ref(db, 'LabDrive/users/' + auth.currentUser.uid);
 
     //GETTING USER DATA
     currentUserUID = auth.currentUser.uid;
 
     //temp
-    var html = document.getElementById('counterTotalFolders').innerHTML;
-
-    /*onValue(userFileRef, (snapshot) => {
-        snapshot.forEach((childSnapshot) => {
-            totalFolders++;
-            const childKey = childSnapshot.key;
-            const childData = childSnapshot.val();
-            console.log(childData.foldername);
-            html += `<p id="cd${childData.folderName}" onclick="openFolder(this.id)"><b>${childData.foldername}</b></p>`;
-            document.getElementById('counterTotalFolders').innerHTML = html;
-            //console.log(html);
-        });
-    }, {
-        onlyOnce: true,
-    })*/
-
+    html = document.getElementById('counterTotalFolders').innerHTML;
+    html = '';
 
     onValue(userAccountDetailsRef, (snapshot) => {
-        /*snapshot.forEach((childSnapshot) => {
-            const childKey = childSnapshot.key;
-            const childData = childSnapshot.val();
-            console.log(childKey, childData);
-            //console.log(childData.foldername);
-            //html += `<p id="cd${childData.folderName}" onclick="openFolder(this.id)"><b>${childData.foldername}</b></p>`;
-            //document.getElementById('counterTotalFolders').innerHTML = html;
-            //console.log(html);
-        });*/
-        console.log('birthday', snapshot.val().birthday);
-        console.log('email', snapshot.val().emailid);
-        console.log('name', snapshot.val().fullname);
-        console.log('rollnumber', snapshot.val().rollnumber);
-        console.log('totalupload', snapshot.val().totalupload);
-        console.log('totaldownload', snapshot.val().totaldownload);
+
+        //SETTING USER DATA
+        currentUserName = snapshot.val().fullname;
+        currentUserBirthday = snapshot.val().birthday;
+        currentUserEmail = snapshot.val().emailid;
+        currentUserRollNumber = snapshot.val().rollnumber;
+        currentUserTotalUploads = snapshot.val().totalupload;
+        currentUserTotalDownloads = snapshot.val().totaldownload;
+
+        html = `<img class="round" width="50" height="50" avatar="${currentUserName}"><br>
+        <p title="${currentUserEmail}">${currentUserName}</p><br>
+        <p>12 file<br>${currentUserTotalUploads} uploads<br>${currentUserTotalDownloads} downloads</p>`;
+
+        document.getElementById('counterTotalFolders').innerHTML = html;
+        const folders = snapshot.val().folders;
+        getFolderFromDb(folders);
     }, {
         onlyOnce: true,
     })
 }
 
 
+function getFolderFromDb(folder) {
+
+    //console.log(folder);
+
+    for (const property in folder) {
+
+        //console.log(folder['foldername:']);
+        //console.log(property, folder[property]);
+        html += `<br><div><p>${folder[property].foldername}</p></div>`;
+        document.getElementById('counterTotalFolders').innerHTML = html;
+
+        //console.log('The folder name is ', folder[property].foldername);
+        const files = folder[property].files;
+        getFilesFromDb(files);
+    }
+}
+
+function getFilesFromDb(file) {
+    for (const property in file) {
+        //console.log(property, file[property]);
+        html += `<br><div><p><a href="${file[property].fileurl}">${file[property].filename}</a><br>
+        ${file[property].filedate}<br>
+        ${file[property].filesize}<br>
+        ${file[property].filetype}<br>
+        </p></div>`;
+        document.getElementById('counterTotalFolders').innerHTML = html;
+
+        //console.log(property);
+        //console.log(file[property].filename); console.log(file[property].filedate); console.log(file[property].filesize); console.log(file[property].filetype); console.log(file[property].fileurl);
+    }
+}
 
 //LOG IN USER WITH ROLL NUMBER AND PASSWORD (EMAIL AND PASSWORD)
 const loginEmailWithPassword = async () => {
@@ -362,3 +386,5 @@ async function UploadProcess() {
 }
 
 fileUploadButton.addEventListener('click', UploadProcess);
+
+
