@@ -96,7 +96,7 @@ function getUserData() {
     //temp
     var html = document.getElementById('counterTotalFolders').innerHTML;
 
-    onValue(userFileRef, (snapshot) => {
+    /*onValue(userFileRef, (snapshot) => {
         snapshot.forEach((childSnapshot) => {
             totalFolders++;
             const childKey = childSnapshot.key;
@@ -108,11 +108,11 @@ function getUserData() {
         });
     }, {
         onlyOnce: true,
-    })
+    })*/
 
 
     onValue(userAccountDetailsRef, (snapshot) => {
-        snapshot.forEach((childSnapshot) => {
+        /*snapshot.forEach((childSnapshot) => {
             const childKey = childSnapshot.key;
             const childData = childSnapshot.val();
             console.log(childKey, childData);
@@ -120,7 +120,13 @@ function getUserData() {
             //html += `<p id="cd${childData.folderName}" onclick="openFolder(this.id)"><b>${childData.foldername}</b></p>`;
             //document.getElementById('counterTotalFolders').innerHTML = html;
             //console.log(html);
-        });
+        });*/
+        console.log('birthday', snapshot.val().birthday);
+        console.log('email', snapshot.val().emailid);
+        console.log('name', snapshot.val().fullname);
+        console.log('rollnumber', snapshot.val().rollnumber);
+        console.log('totalupload', snapshot.val().totalupload);
+        console.log('totaldownload', snapshot.val().totaldownload);
     }, {
         onlyOnce: true,
     })
