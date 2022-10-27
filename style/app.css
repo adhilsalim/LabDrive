@@ -1,6 +1,7 @@
 .block {
-    background-color: #fff;
-    border: 1px solid #ccc;
+    background-color: #F0F0F0;
+    border-color: 1px #000;
+    border-style: solid;
     border-radius: 35px;
     box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
     margin-bottom: 20px;
@@ -10,15 +11,25 @@
 }
 
 .avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     margin-right: 10px;
-    background-color: aqua;
+    background-color: #FFA69E;
 }
 
-.name {
-    font-size: 20px;
-    font-weight: bold;
-    color: #000;
+#profile,
+#generalData {
+    display: flex;
+    align-items: center;
+}
+
+.name h5 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 10;
 }
