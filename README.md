@@ -26,6 +26,7 @@
 * [Acknowledgements](#acknowledgements)
 
 ## About The Project
+![banner](https://raw.githubusercontent.com/adhilsalim/LabDrive/main/readme_banner.jpeg)
 
 Hi there 👋
 LabDrive is a simple web platform to host and manage program files.
